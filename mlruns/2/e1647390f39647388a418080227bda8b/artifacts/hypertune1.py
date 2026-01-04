@@ -38,15 +38,8 @@ grid_search=GridSearchCV(estimator=rf,param_grid=param_grid,cv=5,n_jobs=-1,verbo
 #with mlflow 
 mlflow.set_experiment('Breast-Cancer-rf-hp')
 
-with mlflow.start_run() as parent:
+with mlflow.start_run():
     grid_search.fit(X_train,y_train)
-    
-    #Log all the child runs
-    for i in range(len(grid_search.cv_results_['params'])):
-        
-        with mlflow.start_run(nested=True) as child:
-            mlflow.log_params(grid_search.cv_results_["params"][i])
-            mlflow.log_metric("accuracy",grid_search.cv_results_["mean_test_score"][i])
     
     #Getting the best params and best score
     best_params=grid_search.best_params_
